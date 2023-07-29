@@ -24,7 +24,7 @@ This project uses the `three.min.js` library to handle the 3D rendering. Make su
 
 ## Screenshots
 
-!(demo.png)
+![](/demo.png)
 
 ## Contributing
 
