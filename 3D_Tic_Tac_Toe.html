@@ -1,0 +1,2154 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>3D Tic Tac Toe</title>
+	<style type="text/css">
+		body{
+			margin: 0;
+			display: flex;
+		}
+		canvas{
+			margin : auto;
+		}
+		/* #top{
+			position: absolute;
+			top: 520px;
+			left: 10px;
+			width: 80px;
+			height: 30px;
+			background-color: #aaa;
+			text-align: center;
+			border-radius: 5px;
+			padding-top: 7px;
+			cursor: pointer;
+		}
+		#bottom{
+			position: absolute;
+			top: 520px;
+			left: 100px;
+			width: 80px;
+			height: 30px;
+			background-color: #aaa;
+			text-align: center;
+			border-radius: 5px;
+			padding-top: 7px;
+			cursor: pointer;
+		}
+		#left{
+			position: absolute;
+			top: 520px;
+			left: 190px;
+			width: 80px;
+			height: 30px;
+			background-color: #aaa;
+			text-align: center;
+			border-radius: 5px;
+			padding-top: 7px;
+			cursor: pointer;
+		}
+		#right{
+			position: absolute;
+			top: 520px;
+			left: 280px;
+			width: 80px;
+			height: 30px;
+			background-color: #aaa;
+			text-align: center;
+			border-radius: 5px;
+			padding-top: 7px;
+			cursor: pointer;
+		}
+		#back{
+			position: absolute;
+			top: 520px;
+			left: 370px;
+			width: 80px;
+			height: 30px;
+			background-color: #aaa;
+			text-align: center;
+			border-radius: 5px;
+			padding-top: 7px;
+			cursor: pointer;
+		}
+		#shift{
+			position: absolute;
+			top: 560px;
+			left: 10px;
+			width: 80px;
+			height: 30px;
+			background-color: #aaa;
+			text-align: center;
+			border-radius: 5px;
+			padding-top: 7px;
+			cursor: pointer;
+		} */
+		#mousedetecter1{
+			position: absolute;
+			background-color: transparent;
+			border: solid 0px red;
+		}
+		#mousedetecter2{
+			position: absolute;
+			background-color: transparent;
+			border: solid 0px red;
+			margin: auto;
+		}
+		#mousedetecter3{
+			position: absolute;
+			background-color: transparent;
+			border: solid 0px red;
+		}
+		#mousedetecter4{
+			position: absolute;
+			background-color: transparent;
+			border: solid 0px red;
+		}
+		#mousedetecter5{
+			position: absolute;
+			background-color: transparent;
+			border: solid 0px blue;
+		}
+		#mousedetecter6{
+			position: absolute;
+			background-color: transparent;
+			border: solid 0px red;
+		}
+		#mousedetecter7{
+			position: absolute;
+			background-color: transparent;
+			border: solid 0px red;
+		}
+		#mousedetecter8{
+			position: absolute;
+			background-color: transparent;
+			border: solid 0px red;
+		}
+		#mousedetecter9{
+			position: absolute;
+			background-color: transparent;
+			border: solid 0px red;
+		}
+
+		#mouse-detector-container {
+			position: absolute;
+			left: calc(50% - 250px);
+			height: 500px;
+			width: 500px;
+		}
+
+		#btn-container {
+			position: absolute;
+			left: calc(50% - 250px);
+			display: flex;
+			width: 500px;
+			top: 450px;
+		}
+
+		.btn {
+			position: relative;
+			margin-right: 5px;
+			width: 80px;
+			height: 30px;
+			background-color: #aaa;
+			text-align: center;
+			border-radius: 5px;
+			padding-top: 7px;
+			cursor: pointer;
+		}
+
+	</style>
+</head>
+<body>
+
+	<div id="mouse-detector-container">
+		<div id="mousedetecter1"></div>
+		<div id="mousedetecter2"></div>
+		<div id="mousedetecter3"></div>
+		<div id="mousedetecter4"></div>
+		<div id="mousedetecter5"></div>
+		<div id="mousedetecter6"></div>
+		<div id="mousedetecter7"></div>
+		<div id="mousedetecter8"></div>
+		<div id="mousedetecter9"></div>
+	</div>
+	<div id="btn-container">
+		<div class="btn" id="top" onClick="Top()">Top</div>
+		<div class="btn" id="bottom" onClick="Bottom()">Bottom</div>
+		<div class="btn" id="left" onClick="Left()">Left</div>
+		<div class="btn" id="right" onClick="Right()">Right</div>
+		<div class="btn" id="back" onClick="Back()">Back</div>
+		<div class="btn" id="shift" onClick="shift = !shift;">shift</div>
+	</div>
+
+</body>
+
+<script src="three.min.js"></script>
+
+<script type="text/javascript">
+
+	//****************************************************************************************************************************
+	////setup canvas
+	var sceneColor = 0xffffff;
+	var canvasWidth = 500;
+	var canvasHeight = 500;
+	var scene = new THREE.Scene();
+	scene.background = new THREE.Color(sceneColor);
+	var camera = new THREE.PerspectiveCamera(75,canvasWidth/canvasHeight);
+	camera.position.set( 15, 15, 60 );
+	var renderer = new THREE.WebGLRenderer({antialias: true});
+	renderer.setSize(canvasWidth, canvasHeight);
+	document.body.appendChild(renderer.domElement);
+	var material = new Array();
+	
+	///Variables
+	material[0] = new THREE.LineBasicMaterial( { color: 0x000000 } );
+	material[1] = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
+	material[2] = new THREE.MeshBasicMaterial( { color: 0x0000ff } );
+	material[3] = new THREE.MeshBasicMaterial( { color: 0xaa5555 , transparent: true, opacity: 0.7 } );
+	material[4] = new THREE.MeshBasicMaterial( { color: 0x5555aa , transparent: true, opacity: 0.7 } );
+	var points = [];
+	var line = [];
+	var xCube = [];
+	var oCircle = [];
+	var tempX;
+	var tempXCube = [];
+	var tempO;
+	var startX = 0;
+	var startY = 0;
+	var startZ = 0;
+	var blockSize = 10;
+	var lineSize = 30;
+	var shift = false;
+	var onTarget = false;
+	var eventAdded = false;
+	var turn = (confirm("In This version of Tic Tac Toe you should create \"two\" lines of the same shape across any direction in 3D in order to win!\nRotate the cube using buttons and if you want to place the shape in the middle of the cube use shift button or shift key on keyboard.\nPress ok to start as O or press cancel to start as X!\nPlease note: it may take a while for AI to choose!")) ? "o" : "x";
+	var face = new Array(6);
+	var board = [[['','',''],['','',''],['','','']],[['','',''],['','',''],['','','']],[['','',''],['','',''],['','','']]];
+	var rotation = 0;
+	var rotationVector = "";
+	var rotationDirection = "";
+	var needFixedRotation = 0;
+	var isAnimating = false;
+	var animationSpeed = DegToRad(2);
+	var rotationPerFrame = animationSpeed;
+	var xAxis = new THREE.Vector3(1,0,0);
+	var yAxis = new THREE.Vector3(0,1,0);
+	var zAxis = new THREE.Vector3(0,0,1);
+	var totalXRotation = 0;
+	var totalYRotation = 0;
+	var boardIsFull = false;
+	var AI = 'x';
+	var AIChoice = {x: 0,y: 0,z: 0};
+	var human = 'o';
+	var mode = "mvp";
+	var scoreInstance = {row: 3,double: 2,mono: 1};
+	
+	////Adding Faces
+	face[0] = new Array(9);
+	for (var p = 0;p < 3;p++){
+		face[0][p*3] = new Array(3);
+		face[0][p*3+1] = new Array(3);
+		face[0][p*3+2] = new Array(3);
+		for (var o = 0;o < 3;o++){
+			face[0][p*3+o][0] = 0;
+			face[0][p*3+o][1] = p;
+			face[0][p*3+o][2] = o;
+		}
+	}
+	face[1] = new Array(9);
+	for (var p = 2;p >= 0;p--){
+		face[1][(2-p)*3] = new Array(3);
+		face[1][(2-p)*3+1] = new Array(3);
+		face[1][(2-p)*3+2] = new Array(3);
+		for (var o = 0;o < 3;o++){
+			face[1][(2-p)*3+o][0] = p;
+			face[1][(2-p)*3+o][1] = 0;
+			face[1][(2-p)*3+o][2] = o;
+		}
+	}
+	face[2] = new Array(9);
+	for (var p = 2;p >= 0;p--){
+		face[2][(2-p)*3] = new Array(3);
+		face[2][(2-p)*3+1] = new Array(3);
+		face[2][(2-p)*3+2] = new Array(3);
+		for (var o = 0;o < 3;o++){
+			face[2][(2-p)*3+o][0] = 2;
+			face[2][(2-p)*3+o][1] = p;
+			face[2][(2-p)*3+o][2] = o;
+		}
+	}
+	face[3] = new Array(9);
+	for (var p = 0;p < 3;p++){
+		face[3][p*3] = new Array(3);
+		face[3][p*3+1] = new Array(3);
+		face[3][p*3+2] = new Array(3);
+		for (var o = 0;o < 3;o++){
+			face[3][p*3+o][0] = p;
+			face[3][p*3+o][1] = 2;
+			face[3][p*3+o][2] = o;
+		}
+	}
+	face[4] = new Array(9);
+	for (var p = 0;p < 3;p++){
+		face[4][p*3] = new Array(3);
+		face[4][p*3+1] = new Array(3);
+		face[4][p*3+2] = new Array(3);
+		for (var o = 2;o >= 0;o--){
+			face[4][p*3+2-o][0] = o;
+			face[4][p*3+2-o][1] = p;
+			face[4][p*3+2-o][2] = 0;
+		}
+	}
+	face[5] = new Array(9);
+	for (var p = 0;p < 3;p++){
+		face[5][p*3] = new Array(3);
+		face[5][p*3+1] = new Array(3);
+		face[5][p*3+2] = new Array(3);
+		for (var o = 0;o < 3;o++){
+			face[5][p*3+o][0] = o;
+			face[5][p*3+o][1] = p;
+			face[5][p*3+o][2] = 2;
+		}
+	}
+
+	////Face Rotator
+	function RotateFace(faceIndex,direction,count){
+		let help;
+		for (var i = 0;i < count;i++){
+			if (direction){
+				help = [...face[faceIndex][0]];
+				face[faceIndex][0] = [...face[faceIndex][6]];
+				face[faceIndex][6] = [...face[faceIndex][8]];
+				face[faceIndex][8] = [...face[faceIndex][2]];
+				face[faceIndex][2] = [...help];
+				help = [...face[faceIndex][1]];
+				face[faceIndex][1] = [...face[faceIndex][3]];
+				face[faceIndex][3] = [...face[faceIndex][7]];
+				face[faceIndex][7] = [...face[faceIndex][5]];
+				face[faceIndex][5] = [...help];
+			} else {
+				help = [...face[faceIndex][0]];
+				face[faceIndex][0] = [...face[faceIndex][2]];
+				face[faceIndex][2] = [...face[faceIndex][8]];
+				face[faceIndex][8] = [...face[faceIndex][6]];
+				face[faceIndex][6] = [...help];
+				help = [...face[faceIndex][1]];
+				face[faceIndex][1] = [...face[faceIndex][5]];
+				face[faceIndex][5] = [...face[faceIndex][7]];
+				face[faceIndex][7] = [...face[faceIndex][3]];
+				face[faceIndex][3] = [...help];
+			}
+		}
+	}
+
+	////Face Swapper
+	function FaceSwapper(f1,f2,f3,f4,count,type){
+		var help;
+		if (type == "vertical"){
+			for (let i = 0;i < count;i++){
+				help = [...face[f1]];
+				face[f1] = [...face[f2]];
+				face[f2] = [...face[f3]];
+				face[f3] = [...face[f4]];
+				face[f4] = [...help];
+			}
+		} 
+		if (type == "horizontal") {
+			for (let i = 0;i < count;i++){
+				RotateFace(f1,true,2);
+				help = [...face[f1]];
+				face[f1] = [...face[f2]];
+				face[f2] = [...face[f3]];
+				face[f3] = [...face[f4]];
+				face[f4] = [...help];
+				RotateFace(f1,true,2);
+			}
+		}
+	}
+
+	////Mouse Detecter Setup
+	for (let i = 0;i < 3;i++){
+		for (let j = 0;j < 3;j++){
+			document.getElementById("mousedetecter" + (i*3+j+1).toString()).style.width = canvasWidth/12*2.60 + "px";
+			document.getElementById("mousedetecter" + (i*3+j+1).toString()).style.height = canvasHeight/12*2.60 + "px";
+			document.getElementById("mousedetecter" + (i*3+j+1).toString()).style.left = (canvasWidth - canvasWidth/4*2.60)/2 + (canvasWidth/12*2.60)*j + "px";
+			document.getElementById("mousedetecter" + (i*3+j+1).toString()).style.top =  (canvasHeight - canvasHeight/4*2.60)/2 + (canvasHeight/12*2.60)*i + "px";
+			////EventListener
+			document.getElementById("mousedetecter" + (i*3+j+1).toString()).addEventListener("mouseover",AddSelector);
+			document.getElementById("mousedetecter" + (i*3+j+1).toString()).addEventListener("mouseout", RemoveSelector);
+			document.getElementById("mousedetecter" + (i*3+j+1).toString()).addEventListener("click", SetChoice);
+		}
+	}
+	document.getElementById("mousedetecter5").addEventListener("mouseover", function(){onTarget = true;});
+	document.getElementById("mousedetecter5").addEventListener("mouseout", function(){onTarget = false;});
+	
+	////Set Choice
+	function SetChoice(){
+		let id = parseInt(this.id.substring(this.id.length - 1));
+		if (!isAnimating  && (turn != AI || mode == "2v2")){
+			if (shift && board[1][1][1] == ""){
+				board[1][1][1] = turn;
+				console.log(CheckWinner());
+				if (turn == "x"){
+					RemoveSelector(this.id);
+					turn = "o";
+					AddSelector(this.id);
+					AddX("111");
+				} else {
+					RemoveSelector(this.id);
+					turn = "x";
+					AddSelector(this.id);
+					AddO("111");
+				}
+				var gameStatus = CheckWinner();
+				if (gameStatus != "inProgress") {
+					if (gameStatus == "x") {
+						alert("X Won!\nClick ok to reload the Page!");
+					} else if (gameStatus == "o") {
+						alert("O Won!\nClick ok to reload the Page!");
+					} else {
+						alert("Tie!\nClick ok to reload the Page!");
+					}
+					window.location.reload();
+				}
+				if (mode != "2v2"){
+					AIChoice = CallMinimax();
+					board[AIChoice.x][AIChoice.y][AIChoice.z] = AI;
+					if (turn == "x"){
+						turn = "o";
+						AddX(AIChoice.x.toString() + AIChoice.y.toString() + AIChoice.z.toString());
+					} else {
+						turn = "x";
+						AddO(AIChoice.x.toString() + AIChoice.y.toString() + AIChoice.z.toString());
+					}
+				}
+				var gameStatus = CheckWinner();
+				if (gameStatus != "inProgress") {
+					if (gameStatus == "x") {
+						alert("X Won!\nClick ok to reload the Page!");
+					} else if (gameStatus == "o") {
+						alert("O Won!\nClick ok to reload the Page!");
+					} else {
+						alert("Tie!\nClick ok to reload the Page!");
+					}
+					window.location.reload();
+				}
+			} else if (board[face[0][id - 1][0]][face[0][id - 1][1]][face[0][id - 1][2]] == "" && !shift) {
+				board[face[0][id - 1][0]][face[0][id - 1][1]][face[0][id - 1][2]] = turn;
+				console.log(CheckWinner());
+				if (turn == "x"){
+					RemoveSelector(this.id);
+					turn = "o";
+					AddSelector(this.id);
+					AddX(face[0][id - 1][0].toString() + face[0][id - 1][1].toString() + face[0][id - 1][2].toString());
+				} else {
+					RemoveSelector(this.id);
+					turn = "x";
+					AddSelector(this.id);
+					AddO(face[0][id - 1][0].toString() + face[0][id - 1][1].toString() + face[0][id - 1][2].toString());
+				}
+				var gameStatus = CheckWinner();
+				if (gameStatus != "inProgress") {
+					if (gameStatus == "x") {
+						alert("X Won!\nClick ok to reload the Page!");
+					} else if (gameStatus == "o") {
+						alert("O Won!\nClick ok to reload the Page!");
+					} else {
+						alert("Tie!\nClick ok to reload the Page!");
+					}
+					window.location.reload();
+				}
+				if (mode != "2v2"){
+					AIChoice = CallMinimax();
+					board[AIChoice.x][AIChoice.y][AIChoice.z] = AI;
+					if (turn == "x"){
+						turn = "o";
+						AddX(AIChoice.x.toString() + AIChoice.y.toString() + AIChoice.z.toString());
+					} else {
+						turn = "x";
+						AddO(AIChoice.x.toString() + AIChoice.y.toString() + AIChoice.z.toString());
+					}
+				}
+				var gameStatus = CheckWinner();
+				if (gameStatus != "inProgress") {
+					if (gameStatus == "x") {
+						alert("X Won!\nClick ok to reload the Page!");
+					} else if (gameStatus == "o") {
+						alert("O Won!\nClick ok to reload the Page!");
+					} else {
+						alert("Tie!\nClick ok to reload the Page!");
+					}
+					window.location.reload();
+				}
+			}
+		}
+		//console.log(JSON.stringify(board));
+	}
+
+	////Shift Down
+	window.addEventListener('keydown',function (evt){
+		if (evt.keyCode == 16 && !eventAdded) {
+			shift = true;
+			eventAdded = true;
+			if (onTarget){
+				AddSelector("mousedetecter5");
+			}
+			console.log("shift");
+		}
+	});
+
+	////Shift Up
+	window.addEventListener('keyup',function (evt){
+		if (evt.keyCode == 16) {
+			shift = false;
+			eventAdded = false;
+			if (onTarget){
+				AddSelector("mousedetecter5");
+			}
+			console.log("unshift");
+		}
+	});
+
+	////Add Selector
+	function AddSelector(fixedid){
+		var id = this.id || fixedid;
+		let identity = parseInt(id.substring(id.length - 1));
+		//console.log(id);
+		if (board[face[0][identity - 1][0]][face[0][identity - 1][1]][face[0][identity - 1][2]] == "" && !shift){
+			if (turn == "x"){
+				if (id == "mousedetecter1"){
+					tempX.position.x = 4;
+					tempX.position.y = 26;
+					tempX.position.z = 25;
+					scene.add(tempX);
+				}
+				if (id == "mousedetecter2"){
+					tempX.position.x = 15;
+					tempX.position.y = 26;
+					tempX.position.z = 25;
+					scene.add(tempX);
+				}
+				if (id == "mousedetecter3"){
+					tempX.position.x = 26;
+					tempX.position.y = 26;
+					tempX.position.z = 25;
+					scene.add(tempX);
+				}
+				if (id =="mousedetecter4"){
+					tempX.position.x = 4;
+					tempX.position.y = 15;
+					tempX.position.z = 25;
+					scene.add(tempX);
+				}
+				if (id == "mousedetecter5"){
+					tempX.position.x = 15;
+					tempX.position.y = 15;
+					tempX.position.z = 25;
+					scene.add(tempX);
+				}
+				if (id == "mousedetecter6"){
+					tempX.position.x = 26;
+					tempX.position.y = 15;
+					tempX.position.z = 25;
+					scene.add(tempX);
+				}
+				if (id == "mousedetecter7"){
+					tempX.position.x = 4;
+					tempX.position.y = 4;
+					tempX.position.z = 25;
+					scene.add(tempX);
+				}
+				if (id == "mousedetecter8"){
+					tempX.position.x = 15;
+					tempX.position.y = 4;
+					tempX.position.z = 25;
+					scene.add(tempX);
+				}
+				if (id == "mousedetecter9"){
+					tempX.position.x = 26;
+					tempX.position.y = 4;
+					tempX.position.z = 25;
+					scene.add(tempX);
+				}
+			} else {
+				if (id == "mousedetecter1"){
+					tempO.position.x = 4;
+					tempO.position.y = 26;
+					tempO.position.z = 25;
+					scene.add(tempO);
+				}
+				if (id == "mousedetecter2"){
+					tempO.position.x = 15;
+					tempO.position.y = 26;
+					tempO.position.z = 25;
+					scene.add(tempO);
+				}
+				if (id == "mousedetecter3"){
+					tempO.position.x = 26;
+					tempO.position.y = 26;
+					tempO.position.z = 25;
+					scene.add(tempO);
+				}
+				if (id =="mousedetecter4"){
+					tempO.position.x = 4;
+					tempO.position.y = 15;
+					tempO.position.z = 25;
+					scene.add(tempO);
+				}
+				if (id == "mousedetecter5"){
+					tempO.position.x = 15;
+					tempO.position.y = 15;
+					tempO.position.z = 25;
+					scene.add(tempO);
+				}
+				if (id == "mousedetecter6"){
+					tempO.position.x = 26;
+					tempO.position.y = 15;
+					tempO.position.z = 25;
+					scene.add(tempO);
+				}
+				if (id == "mousedetecter7"){
+					tempO.position.x = 4;
+					tempO.position.y = 4;
+					tempO.position.z = 25;
+					scene.add(tempO);
+				}
+				if (id == "mousedetecter8"){
+					tempO.position.x = 15;
+					tempO.position.y = 4;
+					tempO.position.z = 25;
+					scene.add(tempO);
+				}
+				if (id == "mousedetecter9"){
+					tempO.position.x = 26;
+					tempO.position.y = 4;
+					tempO.position.z = 25;
+					scene.add(tempO);
+				}
+			}
+		} else if (shift && board[1][1][1] == ""){
+			if (turn == "x") {
+				tempX.position.x = 15;
+				tempX.position.y = 15;
+				tempX.position.z = 15;
+				scene.add(tempX);
+			} else {
+				tempO.position.x = 15;
+				tempO.position.y = 15;
+				tempO.position.z = 15;
+				scene.add(tempO);
+			}
+
+		}
+		renderer.render(scene,camera);
+	}
+
+	////Remove Selector
+	function RemoveSelector(){
+		if (turn == "x"){
+			scene.remove(scene.getObjectByName("tempX"));
+			renderer.render(scene,camera);
+		} else {
+			scene.remove(scene.getObjectByName("tempO"));
+			renderer.render(scene,camera);
+		}
+	}
+
+	////Adding Points
+	for (var a = 0;a < 4;a++){
+		for (var b = 0;b < 4;b++){
+			points.push([new THREE.Vector3(startX,a*blockSize + startY,b*blockSize + startZ),new THREE.Vector3(startX + lineSize,a*blockSize + startY,b*blockSize + startZ)]);
+		}
+	}
+	for (var a = 0;a < 4;a++){
+		for (var b = 0;b < 4;b++){
+			points.push([new THREE.Vector3(b*blockSize + startX,startY,a*blockSize + startZ),new THREE.Vector3(b*blockSize + startX,startY + lineSize,a*blockSize + startZ)]);
+		}
+	}
+	for (var a = 0;a < 4;a++){
+		for (var b = 0;b < 4;b++){
+			points.push([new THREE.Vector3(a*blockSize + startX,b*blockSize + startY,startZ),new THREE.Vector3(a*blockSize + startX,b*blockSize + startY,startZ + lineSize)]);
+		}
+	}
+
+	////Adding Lines
+	for (var c = 0;c < points.length;c++){
+		var geometryLine = new THREE.BufferGeometry().setFromPoints(points[c]);
+		line.push(new THREE.Line(geometryLine, material[0]));
+		line[c].position.x = -(lineSize/2) - startX;
+		line[c].position.y = -(lineSize/2) - startY;
+		line[c].position.z = -(lineSize/2) - startZ;
+	}
+
+	////Adding X
+	function AddX(pos){
+		var geometryX = new THREE.BoxGeometry(2,10,2);
+		xCube.push(new THREE.Mesh(geometryX,material[1]));
+		xCube.push(new THREE.Mesh(geometryX,material[1]));
+		if (pos == "000"){
+			xCube[xCube.length - 2].position.x = -10;
+			xCube[xCube.length - 2].position.y = 10;
+			xCube[xCube.length - 2].position.z = 10;
+			xCube[xCube.length - 2].rotation.z = -DegToRad(35);
+			xCube[xCube.length - 2].rotation.y = DegToRad(Math.abs(totalYRotation%180));
+			xCube[xCube.length - 2].rotation.x = DegToRad(Math.abs(totalXRotation%180));
+			xCube[xCube.length - 1].position.x = -10;
+			xCube[xCube.length - 1].position.y = 10;
+			xCube[xCube.length - 1].position.z = 10;
+			xCube[xCube.length - 1].rotation.z = DegToRad(35);
+			xCube[xCube.length - 1].rotation.y = DegToRad(Math.abs(totalYRotation%180));
+			xCube[xCube.length - 1].rotation.x = DegToRad(Math.abs(totalXRotation%180));
+		}
+		if (pos == "001"){
+			xCube[xCube.length - 2].position.x = 0;
+			xCube[xCube.length - 2].position.y = 10;
+			xCube[xCube.length - 2].position.z = 10;
+			xCube[xCube.length - 2].rotation.z = -DegToRad(35);
+			xCube[xCube.length - 2].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 2].rotation.x = DegToRad(totalXRotation%180);
+			xCube[xCube.length - 1].position.x = 0;
+			xCube[xCube.length - 1].position.y = 10;
+			xCube[xCube.length - 1].position.z = 10;
+			xCube[xCube.length - 1].rotation.z = DegToRad(35);
+			xCube[xCube.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "002"){
+			xCube[xCube.length - 2].position.x = 10;
+			xCube[xCube.length - 2].position.y = 10;
+			xCube[xCube.length - 2].position.z = 10;
+			xCube[xCube.length - 2].rotation.z = -DegToRad(35);
+			xCube[xCube.length - 2].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 2].rotation.x = DegToRad(totalXRotation%180);
+			xCube[xCube.length - 1].position.x = 10;
+			xCube[xCube.length - 1].position.y = 10;
+			xCube[xCube.length - 1].position.z = 10;
+			xCube[xCube.length - 1].rotation.z = DegToRad(35);
+			xCube[xCube.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "010"){
+			xCube[xCube.length - 2].position.x = -10;
+			xCube[xCube.length - 2].position.y = 0;
+			xCube[xCube.length - 2].position.z = 10;
+			xCube[xCube.length - 2].rotation.z = -DegToRad(35);
+			xCube[xCube.length - 2].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 2].rotation.x = DegToRad(totalXRotation%180);
+			xCube[xCube.length - 1].position.x = -10;
+			xCube[xCube.length - 1].position.y = 0;
+			xCube[xCube.length - 1].position.z = 10;
+			xCube[xCube.length - 1].rotation.z = DegToRad(35);
+			xCube[xCube.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "011"){
+			xCube[xCube.length - 2].position.x = 0;
+			xCube[xCube.length - 2].position.y = 0;
+			xCube[xCube.length - 2].position.z = 10;
+			xCube[xCube.length - 2].rotation.z = -DegToRad(35);
+			xCube[xCube.length - 2].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 2].rotation.x = DegToRad(totalXRotation%180);
+			xCube[xCube.length - 1].position.x = 0;
+			xCube[xCube.length - 1].position.y = 0;
+			xCube[xCube.length - 1].position.z = 10;
+			xCube[xCube.length - 1].rotation.z = DegToRad(35);
+			xCube[xCube.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "012"){
+			xCube[xCube.length - 2].position.x = 10;
+			xCube[xCube.length - 2].position.y = 0;
+			xCube[xCube.length - 2].position.z = 10;
+			xCube[xCube.length - 2].rotation.z = -DegToRad(35);
+			xCube[xCube.length - 2].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 2].rotation.x = DegToRad(totalXRotation%180);
+			xCube[xCube.length - 1].position.x = 10;
+			xCube[xCube.length - 1].position.y = 0;
+			xCube[xCube.length - 1].position.z = 10;
+			xCube[xCube.length - 1].rotation.z = DegToRad(35);
+			xCube[xCube.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "020"){
+			xCube[xCube.length - 2].position.x = -10;
+			xCube[xCube.length - 2].position.y = -10;
+			xCube[xCube.length - 2].position.z = 10;
+			xCube[xCube.length - 2].rotation.z = -DegToRad(35);
+			xCube[xCube.length - 2].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 2].rotation.x = DegToRad(totalXRotation%180);
+			xCube[xCube.length - 1].position.x = -10;
+			xCube[xCube.length - 1].position.y = -10;
+			xCube[xCube.length - 1].position.z = 10;
+			xCube[xCube.length - 1].rotation.z = DegToRad(35);
+			xCube[xCube.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "021"){
+			xCube[xCube.length - 2].position.x = 0;
+			xCube[xCube.length - 2].position.y = -10;
+			xCube[xCube.length - 2].position.z = 10;
+			xCube[xCube.length - 2].rotation.z = -DegToRad(35);
+			xCube[xCube.length - 2].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 2].rotation.x = DegToRad(totalXRotation%180);
+			xCube[xCube.length - 1].position.x = 0;
+			xCube[xCube.length - 1].position.y = -10;
+			xCube[xCube.length - 1].position.z = 10;
+			xCube[xCube.length - 1].rotation.z = DegToRad(35);
+			xCube[xCube.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "022"){
+			xCube[xCube.length - 2].position.x = 10;
+			xCube[xCube.length - 2].position.y = -10;
+			xCube[xCube.length - 2].position.z = 10;
+			xCube[xCube.length - 2].rotation.z = -DegToRad(35);
+			xCube[xCube.length - 2].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 2].rotation.x = DegToRad(totalXRotation%180);
+			xCube[xCube.length - 1].position.x = 10;
+			xCube[xCube.length - 1].position.y = -10;
+			xCube[xCube.length - 1].position.z = 10;
+			xCube[xCube.length - 1].rotation.z = DegToRad(35);
+			xCube[xCube.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		///
+		if (pos == "100"){
+			xCube[xCube.length - 2].position.x = -10;
+			xCube[xCube.length - 2].position.y = 10;
+			xCube[xCube.length - 2].position.z = 0;
+			xCube[xCube.length - 2].rotation.z = -DegToRad(35);
+			xCube[xCube.length - 2].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 2].rotation.x = DegToRad(totalXRotation%180);
+			xCube[xCube.length - 1].position.x = -10;
+			xCube[xCube.length - 1].position.y = 10;
+			xCube[xCube.length - 1].position.z = 0;
+			xCube[xCube.length - 1].rotation.z = DegToRad(35);
+			xCube[xCube.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "101"){
+			xCube[xCube.length - 2].position.x = 0;
+			xCube[xCube.length - 2].position.y = 10;
+			xCube[xCube.length - 2].position.z = 0;
+			xCube[xCube.length - 2].rotation.z = -DegToRad(35);
+			xCube[xCube.length - 2].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 2].rotation.x = DegToRad(totalXRotation%180);
+			xCube[xCube.length - 1].position.x = 0;
+			xCube[xCube.length - 1].position.y = 10;
+			xCube[xCube.length - 1].position.z = 0;
+			xCube[xCube.length - 1].rotation.z = DegToRad(35);
+			xCube[xCube.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "102"){
+			xCube[xCube.length - 2].position.x = 10;
+			xCube[xCube.length - 2].position.y = 10;
+			xCube[xCube.length - 2].position.z = 0;
+			xCube[xCube.length - 2].rotation.z = -DegToRad(35);
+			xCube[xCube.length - 2].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 2].rotation.x = DegToRad(totalXRotation%180);
+			xCube[xCube.length - 1].position.x = 10;
+			xCube[xCube.length - 1].position.y = 10;
+			xCube[xCube.length - 1].position.z = 0;
+			xCube[xCube.length - 1].rotation.z = DegToRad(35);
+			xCube[xCube.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "110"){
+			xCube[xCube.length - 2].position.x = -10;
+			xCube[xCube.length - 2].position.y = 0;
+			xCube[xCube.length - 2].position.z = 0;
+			xCube[xCube.length - 2].rotation.z = -DegToRad(35);
+			xCube[xCube.length - 2].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 2].rotation.x = DegToRad(totalXRotation%180);
+			xCube[xCube.length - 1].position.x = -10;
+			xCube[xCube.length - 1].position.y = 0;
+			xCube[xCube.length - 1].position.z = 0;
+			xCube[xCube.length - 1].rotation.z = DegToRad(35);
+			xCube[xCube.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "111"){
+			xCube[xCube.length - 2].position.x = 0;
+			xCube[xCube.length - 2].position.y = 0;
+			xCube[xCube.length - 2].position.z = 0;
+			xCube[xCube.length - 2].rotation.z = -DegToRad(35);
+			xCube[xCube.length - 2].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 2].rotation.x = DegToRad(totalXRotation%180);
+			xCube[xCube.length - 1].position.x = 0;
+			xCube[xCube.length - 1].position.y = 0;
+			xCube[xCube.length - 1].position.z = 0;
+			xCube[xCube.length - 1].rotation.z = DegToRad(35);
+			xCube[xCube.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "112"){
+			xCube[xCube.length - 2].position.x = 10;
+			xCube[xCube.length - 2].position.y = 0;
+			xCube[xCube.length - 2].position.z = 0;
+			xCube[xCube.length - 2].rotation.z = -DegToRad(35);
+			xCube[xCube.length - 2].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 2].rotation.x = DegToRad(totalXRotation%180);
+			xCube[xCube.length - 1].position.x = 10;
+			xCube[xCube.length - 1].position.y = 0;
+			xCube[xCube.length - 1].position.z = 0;
+			xCube[xCube.length - 1].rotation.z = DegToRad(35);
+			xCube[xCube.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "120"){
+			xCube[xCube.length - 2].position.x = -10;
+			xCube[xCube.length - 2].position.y = -10;
+			xCube[xCube.length - 2].position.z = 0;
+			xCube[xCube.length - 2].rotation.z = -DegToRad(35);
+			xCube[xCube.length - 2].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 2].rotation.x = DegToRad(totalXRotation%180);
+			xCube[xCube.length - 1].position.x = -10;
+			xCube[xCube.length - 1].position.y = -10;
+			xCube[xCube.length - 1].position.z = 0;
+			xCube[xCube.length - 1].rotation.z = DegToRad(35);
+			xCube[xCube.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "121"){
+			xCube[xCube.length - 2].position.x = 0;
+			xCube[xCube.length - 2].position.y = -10;
+			xCube[xCube.length - 2].position.z = 0;
+			xCube[xCube.length - 2].rotation.z = -DegToRad(35);
+			xCube[xCube.length - 2].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 2].rotation.x = DegToRad(totalXRotation%180);
+			xCube[xCube.length - 1].position.x = 0;
+			xCube[xCube.length - 1].position.y = -10;
+			xCube[xCube.length - 1].position.z = 0;
+			xCube[xCube.length - 1].rotation.z = DegToRad(35);
+			xCube[xCube.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "122"){
+			xCube[xCube.length - 2].position.x = 10;
+			xCube[xCube.length - 2].position.y = -10;
+			xCube[xCube.length - 2].position.z = 0;
+			xCube[xCube.length - 2].rotation.z = -DegToRad(35);
+			xCube[xCube.length - 2].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 2].rotation.x = DegToRad(totalXRotation%180);
+			xCube[xCube.length - 1].position.x = 10;
+			xCube[xCube.length - 1].position.y = -10;
+			xCube[xCube.length - 1].position.z = 0;
+			xCube[xCube.length - 1].rotation.z = DegToRad(35);
+			xCube[xCube.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		///
+		if (pos == "200"){
+			xCube[xCube.length - 2].position.x = -10;
+			xCube[xCube.length - 2].position.y = 10;
+			xCube[xCube.length - 2].position.z = -10;
+			xCube[xCube.length - 2].rotation.z = -DegToRad(35);
+			xCube[xCube.length - 2].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 2].rotation.x = DegToRad(totalXRotation%180);
+			xCube[xCube.length - 1].position.x = -10;
+			xCube[xCube.length - 1].position.y = 10;
+			xCube[xCube.length - 1].position.z = -10;
+			xCube[xCube.length - 1].rotation.z = DegToRad(35);
+			xCube[xCube.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "201"){
+			xCube[xCube.length - 2].position.x = 0;
+			xCube[xCube.length - 2].position.y = 10;
+			xCube[xCube.length - 2].position.z = -10;
+			xCube[xCube.length - 2].rotation.z = -DegToRad(35);
+			xCube[xCube.length - 2].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 2].rotation.x = DegToRad(totalXRotation%180);
+			xCube[xCube.length - 1].position.x = 0;
+			xCube[xCube.length - 1].position.y = 10;
+			xCube[xCube.length - 1].position.z = -10;
+			xCube[xCube.length - 1].rotation.z = DegToRad(35);
+			xCube[xCube.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "202"){
+			xCube[xCube.length - 2].position.x = 10;
+			xCube[xCube.length - 2].position.y = 10;
+			xCube[xCube.length - 2].position.z = -10;
+			xCube[xCube.length - 2].rotation.z = -DegToRad(35);
+			xCube[xCube.length - 2].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 2].rotation.x = DegToRad(totalXRotation%180);
+			xCube[xCube.length - 1].position.x = 10;
+			xCube[xCube.length - 1].position.y = 10;
+			xCube[xCube.length - 1].position.z = -10;
+			xCube[xCube.length - 1].rotation.z = DegToRad(35);
+			xCube[xCube.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "210"){
+			xCube[xCube.length - 2].position.x = -10;
+			xCube[xCube.length - 2].position.y = 0;
+			xCube[xCube.length - 2].position.z = -10;
+			xCube[xCube.length - 2].rotation.z = -DegToRad(35);
+			xCube[xCube.length - 2].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 2].rotation.x = DegToRad(totalXRotation%180);
+			xCube[xCube.length - 1].position.x = -10;
+			xCube[xCube.length - 1].position.y = 0;
+			xCube[xCube.length - 1].position.z = -10;
+			xCube[xCube.length - 1].rotation.z = DegToRad(35);
+			xCube[xCube.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "211"){
+			xCube[xCube.length - 2].position.x = 0;
+			xCube[xCube.length - 2].position.y = 0;
+			xCube[xCube.length - 2].position.z = -10;
+			xCube[xCube.length - 2].rotation.z = -DegToRad(35);
+			xCube[xCube.length - 2].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 2].rotation.x = DegToRad(totalXRotation%180);
+			xCube[xCube.length - 1].position.x = 0;
+			xCube[xCube.length - 1].position.y = 0;
+			xCube[xCube.length - 1].position.z = -10;
+			xCube[xCube.length - 1].rotation.z = DegToRad(35);
+			xCube[xCube.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "212"){
+			xCube[xCube.length - 2].position.x = 10;
+			xCube[xCube.length - 2].position.y = 0;
+			xCube[xCube.length - 2].position.z = -10;
+			xCube[xCube.length - 2].rotation.z = -DegToRad(35);
+			xCube[xCube.length - 2].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 2].rotation.x = DegToRad(totalXRotation%180);
+			xCube[xCube.length - 1].position.x = 10;
+			xCube[xCube.length - 1].position.y = 0;
+			xCube[xCube.length - 1].position.z = -10;
+			xCube[xCube.length - 1].rotation.z = DegToRad(35);
+			xCube[xCube.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "220"){
+			xCube[xCube.length - 2].position.x = -10;
+			xCube[xCube.length - 2].position.y = -10;
+			xCube[xCube.length - 2].position.z = -10;
+			xCube[xCube.length - 2].rotation.z = -DegToRad(35);
+			xCube[xCube.length - 2].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 2].rotation.x = DegToRad(totalXRotation%180);
+			xCube[xCube.length - 1].position.x = -10;
+			xCube[xCube.length - 1].position.y = -10;
+			xCube[xCube.length - 1].position.z = -10;
+			xCube[xCube.length - 1].rotation.z = DegToRad(35);
+			xCube[xCube.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "221"){
+			xCube[xCube.length - 2].position.x = 0;
+			xCube[xCube.length - 2].position.y = -10;
+			xCube[xCube.length - 2].position.z = -10;
+			xCube[xCube.length - 2].rotation.z = -DegToRad(35);
+			xCube[xCube.length - 2].rotation.y = DegToRad(Math.abs(totalYRotation%180));
+			xCube[xCube.length - 2].rotation.x = DegToRad(Math.abs(totalXRotation%180));
+			xCube[xCube.length - 1].position.x = 0;
+			xCube[xCube.length - 1].position.y = -10;
+			xCube[xCube.length - 1].position.z = -10;
+			xCube[xCube.length - 1].rotation.z = DegToRad(35);
+			xCube[xCube.length - 1].rotation.y = DegToRad(Math.abs(totalYRotation%180));
+			xCube[xCube.length - 1].rotation.x = DegToRad(Math.abs(totalXRotation%180));
+		}
+		if (pos == "222"){
+			xCube[xCube.length - 2].position.x = 10;
+			xCube[xCube.length - 2].position.y = -10;
+			xCube[xCube.length - 2].position.z = -10;
+			xCube[xCube.length - 2].rotation.z = -DegToRad(35);
+			xCube[xCube.length - 2].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 2].rotation.x = DegToRad(totalXRotation%180);
+			xCube[xCube.length - 1].position.x = 10;
+			xCube[xCube.length - 1].position.y = -10;
+			xCube[xCube.length - 1].position.z = -10;
+			xCube[xCube.length - 1].rotation.z = DegToRad(35);
+			xCube[xCube.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			xCube[xCube.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		gameCube.add(xCube[xCube.length - 2]);
+		gameCube.add(xCube[xCube.length - 1]);
+		renderer.render(scene,camera);
+	}
+
+	////Adding O
+	function AddO(pos){
+		var geometryO = new THREE.TorusGeometry( 3.5, 1, 16, 20 );
+		oCircle.push(new THREE.Mesh(geometryO,material[2]));
+		if (pos == "000"){
+			oCircle[oCircle.length - 1].position.x = -10;
+			oCircle[oCircle.length - 1].position.y = 10;
+			oCircle[oCircle.length - 1].position.z = 10;
+			oCircle[oCircle.length - 1].rotation.z = -DegToRad(90);
+			oCircle[oCircle.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			oCircle[oCircle.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "001"){
+			oCircle[oCircle.length - 1].position.x = 0;
+			oCircle[oCircle.length - 1].position.y = 10;
+			oCircle[oCircle.length - 1].position.z = 10;
+			oCircle[oCircle.length - 1].rotation.z = DegToRad(90);
+			oCircle[oCircle.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			oCircle[oCircle.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "002"){
+			oCircle[oCircle.length - 1].position.x = 10;
+			oCircle[oCircle.length - 1].position.y = 10;
+			oCircle[oCircle.length - 1].position.z = 10;
+			oCircle[oCircle.length - 1].rotation.z = DegToRad(90);
+			oCircle[oCircle.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			oCircle[oCircle.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "010"){
+			oCircle[oCircle.length - 1].position.x = -10;
+			oCircle[oCircle.length - 1].position.y = 0;
+			oCircle[oCircle.length - 1].position.z = 10;
+			oCircle[oCircle.length - 1].rotation.z = DegToRad(90);
+			oCircle[oCircle.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			oCircle[oCircle.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "011"){
+			oCircle[oCircle.length - 1].position.x = 0;
+			oCircle[oCircle.length - 1].position.y = 0;
+			oCircle[oCircle.length - 1].position.z = 10;
+			oCircle[oCircle.length - 1].rotation.z = DegToRad(90);
+			oCircle[oCircle.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			oCircle[oCircle.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "012"){
+			oCircle[oCircle.length - 1].position.x = 10;
+			oCircle[oCircle.length - 1].position.y = 0;
+			oCircle[oCircle.length - 1].position.z = 10;
+			oCircle[oCircle.length - 1].rotation.z = DegToRad(90);
+			oCircle[oCircle.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			oCircle[oCircle.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "020"){
+			oCircle[oCircle.length - 1].position.x = -10;
+			oCircle[oCircle.length - 1].position.y = -10;
+			oCircle[oCircle.length - 1].position.z = 10;
+			oCircle[oCircle.length - 1].rotation.z = DegToRad(90);
+			oCircle[oCircle.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			oCircle[oCircle.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "021"){
+			oCircle[oCircle.length - 1].position.x = 0;
+			oCircle[oCircle.length - 1].position.y = -10;
+			oCircle[oCircle.length - 1].position.z = 10;
+			oCircle[oCircle.length - 1].rotation.z = DegToRad(90);
+			oCircle[oCircle.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			oCircle[oCircle.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "022"){
+			oCircle[oCircle.length - 1].position.x = 10;
+			oCircle[oCircle.length - 1].position.y = -10;
+			oCircle[oCircle.length - 1].position.z = 10;
+			oCircle[oCircle.length - 1].rotation.z = DegToRad(90);
+			oCircle[oCircle.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			oCircle[oCircle.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		///
+		if (pos == "100"){
+			oCircle[oCircle.length - 1].position.x = -10;
+			oCircle[oCircle.length - 1].position.y = 10;
+			oCircle[oCircle.length - 1].position.z = 0;
+			oCircle[oCircle.length - 1].rotation.z = DegToRad(90);
+			oCircle[oCircle.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			oCircle[oCircle.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "101"){
+			oCircle[oCircle.length - 1].position.x = 0;
+			oCircle[oCircle.length - 1].position.y = 10;
+			oCircle[oCircle.length - 1].position.z = 0;
+			oCircle[oCircle.length - 1].rotation.z = DegToRad(90);
+			oCircle[oCircle.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			oCircle[oCircle.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "102"){
+			oCircle[oCircle.length - 1].position.x = 10;
+			oCircle[oCircle.length - 1].position.y = 10;
+			oCircle[oCircle.length - 1].position.z = 0;
+			oCircle[oCircle.length - 1].rotation.z = DegToRad(90);
+			oCircle[oCircle.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			oCircle[oCircle.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "110"){
+			oCircle[oCircle.length - 1].position.x = -10;
+			oCircle[oCircle.length - 1].position.y = 0;
+			oCircle[oCircle.length - 1].position.z = 0;
+			oCircle[oCircle.length - 1].rotation.z = DegToRad(90);
+			oCircle[oCircle.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			oCircle[oCircle.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "111"){
+			oCircle[oCircle.length - 1].position.x = 0;
+			oCircle[oCircle.length - 1].position.y = 0;
+			oCircle[oCircle.length - 1].position.z = 0;
+			oCircle[oCircle.length - 1].rotation.z = DegToRad(90);
+			oCircle[oCircle.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			oCircle[oCircle.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "112"){
+			oCircle[oCircle.length - 1].position.x = 10;
+			oCircle[oCircle.length - 1].position.y = 0;
+			oCircle[oCircle.length - 1].position.z = 0;
+			oCircle[oCircle.length - 1].rotation.z = DegToRad(90);
+			oCircle[oCircle.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			oCircle[oCircle.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "120"){
+			oCircle[oCircle.length - 1].position.x = -10;
+			oCircle[oCircle.length - 1].position.y = -10;
+			oCircle[oCircle.length - 1].position.z = 0;
+			oCircle[oCircle.length - 1].rotation.z = DegToRad(90);
+			oCircle[oCircle.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			oCircle[oCircle.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "121"){
+			oCircle[oCircle.length - 1].position.x = 0;
+			oCircle[oCircle.length - 1].position.y = -10;
+			oCircle[oCircle.length - 1].position.z = 0;
+			oCircle[oCircle.length - 1].rotation.z = DegToRad(90);
+			oCircle[oCircle.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			oCircle[oCircle.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "122"){
+			oCircle[oCircle.length - 1].position.x = 10;
+			oCircle[oCircle.length - 1].position.y = -10;
+			oCircle[oCircle.length - 1].position.z = 0;
+			oCircle[oCircle.length - 1].rotation.z = DegToRad(90);
+			oCircle[oCircle.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			oCircle[oCircle.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		///
+		if (pos == "200"){
+			oCircle[oCircle.length - 1].position.x = -10;
+			oCircle[oCircle.length - 1].position.y = 10;
+			oCircle[oCircle.length - 1].position.z = -10;
+			oCircle[oCircle.length - 1].rotation.z = DegToRad(90);
+			oCircle[oCircle.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			oCircle[oCircle.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "201"){
+			oCircle[oCircle.length - 1].position.x = 0;
+			oCircle[oCircle.length - 1].position.y = 10;
+			oCircle[oCircle.length - 1].position.z = -10;
+			oCircle[oCircle.length - 1].rotation.z = DegToRad(90);
+			oCircle[oCircle.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			oCircle[oCircle.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "202"){
+			oCircle[oCircle.length - 1].position.x = 10;
+			oCircle[oCircle.length - 1].position.y = 10;
+			oCircle[oCircle.length - 1].position.z = -10;
+			oCircle[oCircle.length - 1].rotation.z = DegToRad(90);
+			oCircle[oCircle.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			oCircle[oCircle.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "210"){
+			oCircle[oCircle.length - 1].position.x = -10;
+			oCircle[oCircle.length - 1].position.y = 0;
+			oCircle[oCircle.length - 1].position.z = -10;
+			oCircle[oCircle.length - 1].rotation.z = DegToRad(90);
+			oCircle[oCircle.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			oCircle[oCircle.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "211"){
+			oCircle[oCircle.length - 1].position.x = 0;
+			oCircle[oCircle.length - 1].position.y = 0;
+			oCircle[oCircle.length - 1].position.z = -10;
+			oCircle[oCircle.length - 1].rotation.z = DegToRad(90);
+			oCircle[oCircle.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			oCircle[oCircle.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "212"){
+			oCircle[oCircle.length - 1].position.x = 10;
+			oCircle[oCircle.length - 1].position.y = 0;
+			oCircle[oCircle.length - 1].position.z = -10;
+			oCircle[oCircle.length - 1].rotation.z = DegToRad(90);
+			oCircle[oCircle.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			oCircle[oCircle.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "220"){
+			oCircle[oCircle.length - 1].position.x = -10;
+			oCircle[oCircle.length - 1].position.y = -10;
+			oCircle[oCircle.length - 1].position.z = -10;
+			oCircle[oCircle.length - 1].rotation.z = DegToRad(90);
+			oCircle[oCircle.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			oCircle[oCircle.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "221"){
+			oCircle[oCircle.length - 1].position.x = 0;
+			oCircle[oCircle.length - 1].position.y = -10;
+			oCircle[oCircle.length - 1].position.z = -10;
+			oCircle[oCircle.length - 1].rotation.z = DegToRad(90);
+			oCircle[oCircle.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			oCircle[oCircle.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		if (pos == "222"){
+			oCircle[oCircle.length - 1].position.x = 10;
+			oCircle[oCircle.length - 1].position.y = -10;
+			oCircle[oCircle.length - 1].position.z = -10;
+			oCircle[oCircle.length - 1].rotation.z = DegToRad(90);
+			oCircle[oCircle.length - 1].rotation.y = DegToRad(totalYRotation%180);
+			oCircle[oCircle.length - 1].rotation.x = DegToRad(totalXRotation%180);
+		}
+		gameCube.add(oCircle[oCircle.length - 1]);
+		renderer.render(scene,camera);
+	}
+	
+	////Adding Temporary X
+	var geometryTempX = new THREE.BoxGeometry(2 , 10 , 2);
+	tempXCube[0] = new THREE.Mesh(geometryTempX,material[3]);
+	tempXCube[0].rotation.z = DegToRad(35);
+	tempXCube[1] = new THREE.Mesh(geometryTempX,material[3]);
+	tempXCube[1].rotation.z = DegToRad(-35);
+	tempX = new THREE.Group();
+	tempX.add(tempXCube[0]);
+	tempX.add(tempXCube[1]);
+	tempX.name = "tempX";
+	
+	////Adding Temporary O
+	var geometryTempO = new THREE.TorusGeometry( 3.5, 1, 16, 20 );
+	tempO = new THREE.Mesh(geometryTempO,material[4]);
+	tempO.rotation.z = DegToRad(90);
+	tempO.name = "tempO";
+	
+	////Grouping Lines
+	var gameCube = new THREE.Group();
+	gameCube.position.set((lineSize/2) + startX,(lineSize/2) + startY,(lineSize/2) + startZ);
+	gameCube.rotation.x = 0;
+	for (var d = 0;d < line.length;d++){
+		gameCube.add(line[d]);
+	}
+	//gameCube.add(xCube[0]);
+	//gameCube.add(xCube[1]);
+	//gameCube.add(oCircle[0]);
+	//scene.add(sphere[0]);
+	//scene.remove(scene.getObjectByName("temp"));
+	////Rendering Scene
+	scene.add(gameCube);
+	renderer.render(scene,camera);
+	
+	//****************************************************************************************************************************
+	////Degree To Radian
+	function DegToRad(deg) {
+		return (deg*2*Math.PI)/360;
+	}
+
+	////Animated Movement Functions
+	function Top() {
+		if (!isAnimating){
+			rotation = 90;
+			totalXRotation += 90;
+			rotationVector = "x";
+			rotationDirection = "counterclockwise";
+			isAnimating = true;
+			rotation =  DegToRad(rotation);
+			FaceSwapper(0,1,2,3,1,"vertical");
+			RotateFace(4,true,1);
+			RotateFace(5,false,1);
+			animate();
+		}
+	}
+
+	function Bottom() {
+		if (!isAnimating){
+			rotation = 90;
+			totalXRotation -= 90;
+			rotationVector = "x";
+			rotationDirection = "clockwise";
+			isAnimating = true;
+			rotation = DegToRad(rotation);
+			FaceSwapper(0,3,2,1,1,"vertical");
+			RotateFace(4,false,1);
+			RotateFace(5,true,1);
+			animate();
+		}
+	}
+
+	function Back() {
+		if (!isAnimating){
+			rotation = 180;
+			totalXRotation += 180;
+			rotationVector = "x";
+			rotationDirection = "counterclockwise";
+			isAnimating = true;
+			rotation = DegToRad(rotation);
+			FaceSwapper(0,1,2,3,2,"vertical");
+			RotateFace(4,true,2);
+			RotateFace(5,true,2);
+			animate();
+		}
+	}
+
+	function Right() {
+		if (!isAnimating){
+			rotation = 90;
+			totalYRotation -= 90;
+			rotationVector = "y";
+			rotationDirection = "clockwise";
+			isAnimating = true;
+			rotation = DegToRad(rotation);
+			FaceSwapper(2,4,0,5,1,"horizontal");
+			RotateFace(1,true,1);
+			RotateFace(3,false,1);
+			animate();
+		}
+	}
+
+	function Left() {
+		if (!isAnimating){
+			rotation = 90;
+			totalYRotation += 90;
+			rotationVector = "y";
+			rotationDirection = "counterclockwise";
+			isAnimating = true;
+			rotation = DegToRad(rotation);
+			FaceSwapper(2,5,0,4,1,"horizontal");
+			RotateFace(1,false,1);
+			RotateFace(3,true,1);
+			animate();
+		}
+	}
+	
+	function animate(){
+		//console.log("ok");
+		if (rotation - animationSpeed < 0){
+			rotationPerFrame = rotation;
+		} else {
+			rotationPerFrame = animationSpeed;
+		}
+		if (rotationVector == "x" && rotationDirection == "clockwise"){
+			//gameCube.rotation.x -= rotationPerFrame;
+			gameCube.rotateOnWorldAxis(xAxis, -rotationPerFrame);
+			for (var i = 0;i < xCube.length;i++){
+				xCube[i].rotation.x += rotationPerFrame;
+				//xCube[i].rotateOnWorldAxis(xAxis, rotationPerFrame);
+			}
+			for (var j = 0;j < oCircle.length;j++){
+				oCircle[j].rotation.x += rotationPerFrame;
+				//oCircle[j].rotateOnWorldAxis(xAxis, rotationPerFrame);
+			}
+		}
+		if (rotationVector == "x" && rotationDirection == "counterclockwise"){
+			//gameCube.rotation.x += rotationPerFrame;
+			gameCube.rotateOnWorldAxis(xAxis, rotationPerFrame);
+			for (var i = 0;i < xCube.length;i++){
+				xCube[i].rotation.x -= rotationPerFrame;
+				//xCube[i].rotateOnWorldAxis(xAxis, -rotationPerFrame);
+			}
+			for (var j = 0;j < oCircle.length;j++){
+				oCircle[j].rotation.x -= rotationPerFrame;
+				//oCircle[j].rotateOnWorldAxis(xAxis, -rotationPerFrame);
+			}
+		}
+		if (rotationVector == "y" && rotationDirection == "clockwise"){
+			//gameCube.rotation.y -= rotationPerFrame;
+			gameCube.rotateOnWorldAxis(yAxis, -rotationPerFrame);
+			for (var i = 0;i < xCube.length;i++){
+				xCube[i].rotation.y += rotationPerFrame;
+				//xCube[i].rotateOnWorldAxis(yAxis, rotationPerFrame);
+			}
+			for (var j = 0;j < oCircle.length;j++){
+				oCircle[j].rotation.y += rotationPerFrame;
+				//oCircle[j].rotateOnWorldAxis(yAxis, rotationPerFrame);
+			}
+		}
+		if (rotationVector == "y" && rotationDirection == "counterclockwise"){
+			gameCube.rotateOnWorldAxis(yAxis, rotationPerFrame);
+			//gameCube.rotation.y += rotationPerFrame;
+			for (var i = 0;i < xCube.length;i++){
+				xCube[i].rotation.y -= rotationPerFrame;
+				//xCube[i].rotateOnWorldAxis(yAxis, -rotationPerFrame);
+			}
+			for (var j = 0;j < oCircle.length;j++){
+				oCircle[j].rotation.y -= rotationPerFrame;
+				//oCircle[j].rotateOnWorldAxis(yAxis, -rotationPerFrame);
+			}
+		}
+		/*if (rotationVector == "z" && rotationDirection == "clockwise"){
+			gameCube.rotation.z -= rotationPerFrame;
+			for (var i = 0;i < xCube.length;i++){
+				xCube[i].rotation.z += rotationPerFrame;
+			}
+			for (var j = 0;j < oCircle.length;j++){
+				oCircle[j].rotation.z += rotationPerFrame;
+			}
+		}
+		if (rotationVector == "z" && rotationDirection == "counterclockwise"){
+			gameCube.rotation.z += rotationPerFrame;
+			for (var i = 0;i < xCube.length;i++){
+				xCube[i].rotation.z -= rotationPerFrame;
+			}
+			for (var j = 0;j < oCircle.length;j++){
+				oCircle[j].rotation.z -= rotationPerFrame;
+			}
+		}*/
+		rotation -= animationSpeed;
+		renderer.render(scene,camera);
+		if (rotation <= 0){
+			isAnimating = false;
+		}
+		if (isAnimating){
+			requestAnimationFrame(animate);
+		}
+	}
+	
+	///setup:
+	var width = 100;
+	var length = 100;
+	var height = 100;
+
+	function AloneInRow(a,b,c){
+		if (a != '' && b == '' && c == ''){
+			return a;
+		} else if (a == '' && b != '' && c == '') {
+			return b;
+		} else if (a == '' && b == '' && c != '') {
+			return c;
+		} else {
+			return '';
+		}
+	}
+	
+	function Attack(a,b,c){
+		if (a != '' && a == b && c == ''){
+			return a;
+		} else if (a != '' && b == '' && a == c) {
+			return a;
+		} else if (a == '' && b != '' && b == c) {
+			return b;
+		} else {
+			return '';
+		}
+	}
+	
+	function FullRow(a,b,c){
+		if (a == b && b == c && a != ''){
+			return a;
+		} else {
+			return '';
+		}	
+	}
+	
+	function Equal3(a,b,c){
+		if (a == b && b == c && a != ''){
+			return true;
+		} else {
+			return false;
+		}	
+	}
+	
+	/*function CheckWinner(){
+		///Horizontal
+		for (var a = 0;a < 3;a++){
+			for (var b = 0;b < 3;b++){
+				if (Equal3(board[a][b][0],board[a][b][1],board[a][b][2])){
+					return board[a][b][0];
+				}
+			}
+		}
+		///Vertical
+		for (var a = 0;a < 3;a++){
+			for (var b = 0;b < 3;b++){
+				if (Equal3(board[a][0][b],board[a][1][b],board[a][2][b])){
+					return board[a][0][b];
+				}
+			}
+		}
+		///depical
+		for (var a = 0;a < 3;a++){
+			for (var b = 0;b < 3;b++){
+				if (Equal3(board[0][a][b],board[1][a][b],board[2][a][b])){
+					return board[0][a][b];
+				}
+			}
+		}
+		///diagonal 1
+		for (var a = 0;a < 3;a++){
+			if (Equal3(board[a][0][0],board[a][1][1],board[a][2][2])){
+				return board[a][0][0];
+			}
+			if (Equal3(board[a][0][2],board[a][1][1],board[a][2][0])){
+				return board[a][0][2];
+			}
+		}
+		///diagonal 2
+		for (var a = 0;a < 3;a++){
+			if (Equal3(board[2][a][0],board[1][a][1],board[0][a][2])){
+				return board[2][a][0];
+			}
+			if (Equal3(board[2][a][2],board[1][a][1],board[0][a][0])){
+				return board[2][a][2];
+			}
+		}
+		///diagonal 3
+		for (var a = 0;a < 3;a++){
+			if (Equal3(board[2][0][a],board[1][1][a],board[0][2][a])){
+				return board[2][0][a];
+			}
+			if (Equal3(board[2][2][a],board[1][1][a],board[0][0][a])){
+				return board[2][2][a];
+			}
+		}
+		///diagonal 3D
+		if (Equal3(board[0][0][0],board[1][1][1],board[2][2][2])){
+				return board[0][0][0];
+		}
+		if (Equal3(board[0][0][2],board[1][1][1],board[2][2][0])){
+				return board[0][0][2];
+		}
+		if (Equal3(board[2][0][0],board[1][1][1],board[0][2][2])){
+				return board[2][0][0];
+		}
+		if (Equal3(board[2][0][2],board[1][1][1],board[0][2][0])){
+				return board[2][0][2];
+		}
+		boardIsFull = true;
+		for (var a = 0;a < 3;a++){
+			for (var b = 0;b < 3;b++){
+				for (var c = 0;c < 3;c++){
+					if (board[a][b][c] == ""){
+						boardIsFull = false;
+					}
+				}
+			}
+		}
+		if (boardIsFull){
+			return "tie";
+		}
+		return "inProgress";
+	}*/
+	
+	function CheckWinner(){
+		var xRow = 0;
+		var oRow = 0
+		///Horizontal
+		for (var a = 0;a < 3;a++){
+			for (var b = 0;b < 3;b++){
+				if (Equal3(board[a][b][0],board[a][b][1],board[a][b][2])){
+					if (board[a][b][0] == "x"){
+						xRow++;
+					} else {
+						oRow++;
+					}
+				}
+			}
+		}
+		///Vertical
+		for (var a = 0;a < 3;a++){
+			for (var b = 0;b < 3;b++){
+				if (Equal3(board[a][0][b],board[a][1][b],board[a][2][b])){
+					if (board[a][0][b] == "x"){
+						xRow++;
+					} else {
+						oRow++;
+					}
+				}
+			}
+		}
+		///depical
+		for (var a = 0;a < 3;a++){
+			for (var b = 0;b < 3;b++){
+				if (Equal3(board[0][a][b],board[1][a][b],board[2][a][b])){
+					if (board[0][a][b] == "x"){
+						xRow++;
+					} else {
+						oRow++;
+					}
+				}
+			}
+		}
+		///diagonal 1
+		for (var a = 0;a < 3;a++){
+			if (Equal3(board[a][0][0],board[a][1][1],board[a][2][2])){
+				if (board[a][0][0] == "x"){
+						xRow++;
+					} else {
+						oRow++;
+					}
+			}
+			if (Equal3(board[a][0][2],board[a][1][1],board[a][2][0])){
+				if (board[a][0][2] == "x"){
+						xRow++;
+					} else {
+						oRow++;
+					}
+			}
+		}
+		///diagonal 2
+		for (var a = 0;a < 3;a++){
+			if (Equal3(board[2][a][0],board[1][a][1],board[0][a][2])){
+				if (board[2][a][0] == "x"){
+						xRow++;
+					} else {
+						oRow++;
+					}
+			}
+			if (Equal3(board[2][a][2],board[1][a][1],board[0][a][0])){
+				if (board[2][a][2] == "x"){
+						xRow++;
+					} else {
+						oRow++;
+					}
+			}
+		}
+		///diagonal 3
+		for (var a = 0;a < 3;a++){
+			if (Equal3(board[2][0][a],board[1][1][a],board[0][2][a])){
+				if (board[2][0][a] == "x"){
+						xRow++;
+					} else {
+						oRow++;
+					}
+			}
+			if (Equal3(board[2][2][a],board[1][1][a],board[0][0][a])){
+				if (board[2][2][a] == "x"){
+						xRow++;
+					} else {
+						oRow++;
+					}
+			}
+		}
+		///diagonal 3D
+		if (Equal3(board[0][0][0],board[1][1][1],board[2][2][2])){
+				if (board[0][0][0] == "x"){
+						xRow++;
+					} else {
+						oRow++;
+					}
+		}
+		if (Equal3(board[0][0][2],board[1][1][1],board[2][2][0])){
+				if (board[0][0][2] == "x"){
+						xRow++;
+					} else {
+						oRow++;
+					}
+		}
+		if (Equal3(board[2][0][0],board[1][1][1],board[0][2][2])){
+				if (board[2][0][0] == "x"){
+						xRow++;
+					} else {
+						oRow++;
+					}
+		}
+		if (Equal3(board[2][0][2],board[1][1][1],board[0][2][0])){
+				if (board[2][0][2] == "x"){
+						xRow++;
+					} else {
+						oRow++;
+					}
+		}
+		if (xRow == 2){
+			return "x";
+		}
+		if (oRow == 2){
+			return "o";
+		}
+		boardIsFull = true;
+		for (var a = 0;a < 3;a++){
+			for (var b = 0;b < 3;b++){
+				for (var c = 0;c < 3;c++){
+					if (board[a][b][c] == ""){
+						boardIsFull = false;
+					}
+				}
+			}
+		}
+		if (boardIsFull){
+			return "tie";
+		}
+		return "inProgress";
+	}
+	
+	////Guessing Point
+	function GuessPoint(){
+		let point = 0;
+		/////////////Alone In Row And Attack And Full Row
+		///Horizontal
+		for (var a = 0;a < 3;a++){
+			for (var b = 0;b < 3;b++){
+				if (AloneInRow(board[a][b][0],board[a][b][1],board[a][b][2]) == AI){
+					point += scoreInstance.mono;
+				}
+				if (AloneInRow(board[a][b][0],board[a][b][1],board[a][b][2]) == human){
+					point -= scoreInstance.mono;
+				}
+				if (Attack(board[a][b][0],board[a][b][1],board[a][b][2]) == AI){
+					point += scoreInstance.double;
+				}
+				if (Attack(board[a][b][0],board[a][b][1],board[a][b][2]) == human){
+					point -= scoreInstance.double;
+				}
+				if (FullRow(board[a][b][0],board[a][b][1],board[a][b][2]) == AI){
+					point += scoreInstance.row;
+				}
+				if (FullRow(board[a][b][0],board[a][b][1],board[a][b][2]) == human){
+					point -= scoreInstance.row;
+				}
+			}
+		}
+		///Vertical
+		for (var a = 0;a < 3;a++){
+			for (var b = 0;b < 3;b++){
+				if (AloneInRow(board[a][0][b],board[a][1][b],board[a][2][b]) == AI){
+					point += scoreInstance.mono;
+				}
+				if (AloneInRow(board[a][0][b],board[a][1][b],board[a][2][b]) == human){
+					point -= scoreInstance.mono;
+				}
+				if (Attack(board[a][0][b],board[a][1][b],board[a][2][b]) == AI){
+					point += scoreInstance.double;
+				}
+				if (Attack(board[a][0][b],board[a][1][b],board[a][2][b]) == human){
+					point -= scoreInstance.double;
+				}
+				if (FullRow(board[a][0][b],board[a][1][b],board[a][2][b]) == AI){
+					point += scoreInstance.row;
+				}
+				if (FullRow(board[a][0][b],board[a][1][b],board[a][2][b]) == human){
+					point -= scoreInstance.row;
+				}
+			}
+		}
+		///depical
+		for (var a = 0;a < 3;a++){
+			for (var b = 0;b < 3;b++){
+				if (AloneInRow(board[0][a][b],board[1][a][b],board[2][a][b]) == AI){
+					point += scoreInstance.mono;
+				}
+				if (AloneInRow(board[0][a][b],board[1][a][b],board[2][a][b]) == human){
+					point -= scoreInstance.mono;
+				}
+				if (Attack(board[0][a][b],board[1][a][b],board[2][a][b]) == AI){
+					point += scoreInstance.double;
+				}
+				if (Attack(board[0][a][b],board[1][a][b],board[2][a][b]) == human){
+					point -= scoreInstance.double;
+				}
+				if (FullRow(board[0][a][b],board[1][a][b],board[2][a][b]) == AI){
+					point += scoreInstance.row;
+				}
+				if (FullRow(board[0][a][b],board[1][a][b],board[2][a][b]) == human){
+					point -= scoreInstance.row;
+				}
+			}
+		}
+		///diagonal 1
+		for (var a = 0;a < 3;a++){
+			if (AloneInRow(board[a][0][0],board[a][1][1],board[a][2][2]) == AI){
+				point += scoreInstance.mono;
+			}
+			if (AloneInRow(board[a][0][0],board[a][1][1],board[a][2][2]) == human){
+				point -= scoreInstance.mono;
+			}
+			if (AloneInRow(board[a][0][2],board[a][1][1],board[a][2][0]) == AI){
+				point += scoreInstance.mono;
+			}
+			if (AloneInRow(board[a][0][2],board[a][1][1],board[a][2][0]) == human){
+				point -= scoreInstance.mono;
+			}
+			if (Attack(board[a][0][0],board[a][1][1],board[a][2][2]) == AI){
+				point += scoreInstance.double;
+			}
+			if (Attack(board[a][0][0],board[a][1][1],board[a][2][2]) == human){
+				point -= scoreInstance.double;
+			}
+			if (Attack(board[a][0][2],board[a][1][1],board[a][2][0]) == AI){
+				point += scoreInstance.double;
+			}
+			if (Attack(board[a][0][2],board[a][1][1],board[a][2][0]) == human){
+				point -= scoreInstance.double;
+			}
+			if (FullRow(board[a][0][0],board[a][1][1],board[a][2][2]) == AI){
+				point += scoreInstance.row;
+			}
+			if (FullRow(board[a][0][0],board[a][1][1],board[a][2][2]) == human){
+				point -= scoreInstance.row;
+			}
+			if (FullRow(board[a][0][2],board[a][1][1],board[a][2][0]) == AI){
+				point += scoreInstance.row;
+			}
+			if (FullRow(board[a][0][2],board[a][1][1],board[a][2][0]) == human){
+				point -= scoreInstance.row;
+			}
+		}
+		///diagonal 2
+		for (var a = 0;a < 3;a++){
+			if (AloneInRow(board[2][a][0],board[1][a][1],board[0][a][2]) == AI){
+				point += scoreInstance.mono;
+			}
+			if (AloneInRow(board[2][a][0],board[1][a][1],board[0][a][2]) == human){
+				point -= scoreInstance.mono;
+			}
+			if (AloneInRow(board[2][a][2],board[1][a][1],board[0][a][0]) == AI){
+				point += scoreInstance.mono;
+			}
+			if (AloneInRow(board[2][a][2],board[1][a][1],board[0][a][0]) == human){
+				point -= scoreInstance.mono;
+			}
+			if (Attack(board[2][a][0],board[1][a][1],board[0][a][2]) == AI){
+				point += scoreInstance.double;
+			}
+			if (Attack(board[2][a][0],board[1][a][1],board[0][a][2]) == human){
+				point -= scoreInstance.double;
+			}
+			if (Attack(board[2][a][2],board[1][a][1],board[0][a][0]) == AI){
+				point += scoreInstance.double;
+			}
+			if (Attack(board[2][a][2],board[1][a][1],board[0][a][0]) == human){
+				point -= scoreInstance.double;
+			}
+			if (FullRow(board[2][a][0],board[1][a][1],board[0][a][2]) == AI){
+				point += scoreInstance.row;
+			}
+			if (FullRow(board[2][a][0],board[1][a][1],board[0][a][2]) == human){
+				point -= scoreInstance.row;
+			}
+			if (FullRow(board[2][a][2],board[1][a][1],board[0][a][0]) == AI){
+				point += scoreInstance.row;
+			}
+			if (FullRow(board[2][a][2],board[1][a][1],board[0][a][0]) == human){
+				point -= scoreInstance.row;
+			}
+		}
+		///diagonal 3
+		for (var a = 0;a < 3;a++){
+			if (AloneInRow(board[2][0][a],board[1][1][a],board[0][2][a]) == AI){
+				point += scoreInstance.mono;
+			}
+			if (AloneInRow(board[2][0][a],board[1][1][a],board[0][2][a]) == human){
+				point -= scoreInstance.mono;
+			}
+			if (AloneInRow(board[2][2][a],board[1][1][a],board[0][0][a]) == AI){
+				point += scoreInstance.mono;
+			}
+			if (AloneInRow(board[2][2][a],board[1][1][a],board[0][0][a]) == human){
+				point -= scoreInstance.mono;
+			}
+			if (Attack(board[2][0][a],board[1][1][a],board[0][2][a]) == AI){
+				point += scoreInstance.double;
+			}
+			if (Attack(board[2][0][a],board[1][1][a],board[0][2][a]) == human){
+				point -= scoreInstance.double;
+			}
+			if (Attack(board[2][2][a],board[1][1][a],board[0][0][a]) == AI){
+				point += scoreInstance.double;
+			}
+			if (Attack(board[2][2][a],board[1][1][a],board[0][0][a]) == human){
+				point -= scoreInstance.double;
+			}
+			if (FullRow(board[2][0][a],board[1][1][a],board[0][2][a]) == AI){
+				point += scoreInstance.row;
+			}
+			if (FullRow(board[2][0][a],board[1][1][a],board[0][2][a]) == human){
+				point -= scoreInstance.row;
+			}
+			if (FullRow(board[2][2][a],board[1][1][a],board[0][0][a]) == AI){
+				point += scoreInstance.row;
+			}
+			if (FullRow(board[2][2][a],board[1][1][a],board[0][0][a]) == human){
+				point -= scoreInstance.row;
+			}
+		}
+		///diagonal 3D
+		if (AloneInRow(board[0][0][0],board[1][1][1],board[2][2][2]) == AI){
+			point += scoreInstance.mono;
+		}
+		if (AloneInRow(board[0][0][0],board[1][1][1],board[2][2][2]) == human){
+			point -= scoreInstance.mono;
+		}
+		if (AloneInRow(board[0][0][2],board[1][1][1],board[2][2][0]) == AI){
+			point += scoreInstance.mono;
+		}
+		if (AloneInRow(board[0][0][2],board[1][1][1],board[2][2][0]) == human){
+			point -= scoreInstance.mono;
+		}
+		if (AloneInRow(board[2][0][0],board[1][1][1],board[0][2][2]) == AI){
+			point += scoreInstance.mono;
+		}
+		if (AloneInRow(board[2][0][0],board[1][1][1],board[0][2][2]) == human){
+			point -= scoreInstance.mono;
+		}
+		if (AloneInRow(board[2][0][2],board[1][1][1],board[0][2][0]) == AI){
+			point += scoreInstance.mono;
+		}
+		if (AloneInRow(board[2][0][2],board[1][1][1],board[0][2][0]) == human){
+			point -= scoreInstance.mono;
+		}
+		if (Attack(board[0][0][0],board[1][1][1],board[2][2][2]) == AI){
+			point += scoreInstance.double;
+		}
+		if (Attack(board[0][0][0],board[1][1][1],board[2][2][2]) == human){
+			point -= scoreInstance.double;
+		}
+		if (Attack(board[0][0][2],board[1][1][1],board[2][2][0]) == AI){
+			point += scoreInstance.double;
+		}
+		if (Attack(board[0][0][2],board[1][1][1],board[2][2][0]) == human){
+			point -= scoreInstance.double;
+		}
+		if (Attack(board[2][0][0],board[1][1][1],board[0][2][2]) == AI){
+			point += scoreInstance.double;
+		}
+		if (Attack(board[2][0][0],board[1][1][1],board[0][2][2]) == human){
+			point -= scoreInstance.double;
+		}
+		if (Attack(board[2][0][2],board[1][1][1],board[0][2][0]) == AI){
+			point += scoreInstance.double;
+		}
+		if (Attack(board[2][0][2],board[1][1][1],board[0][2][0]) == human){
+			point -= scoreInstance.double;
+		}
+		if (FullRow(board[0][0][0],board[1][1][1],board[2][2][2]) == AI){
+			point += scoreInstance.row;
+		}
+		if (FullRow(board[0][0][0],board[1][1][1],board[2][2][2]) == human){
+			point -= scoreInstance.row;
+		}
+		if (FullRow(board[0][0][2],board[1][1][1],board[2][2][0]) == AI){
+			point += scoreInstance.row;
+		}
+		if (FullRow(board[0][0][2],board[1][1][1],board[2][2][0]) == human){
+			point -= scoreInstance.row;
+		}
+		if (FullRow(board[2][0][0],board[1][1][1],board[0][2][2]) == AI){
+			point += scoreInstance.row;
+		}
+		if (FullRow(board[2][0][0],board[1][1][1],board[0][2][2]) == human){
+			point -= scoreInstance.row;
+		}
+		if (FullRow(board[2][0][2],board[1][1][1],board[0][2][0]) == AI){
+			point += scoreInstance.row;
+		}
+		if (FullRow(board[2][0][2],board[1][1][1],board[0][2][0]) == human){
+			point -= scoreInstance.row;
+		}
+		return point;
+	}
+	
+	////Calling Minimax 
+	function  CallMinimax() {
+		let choice = {x: 0,y: 0,z: 0};
+		let bestPoint = -Infinity;
+		let point;
+		for (let a = 0;a < 3;a++){
+			for (let b = 0;b < 3;b++){
+				for (let c = 0;c < 3;c++){
+					if (board[a][b][c] == ""){
+						console.log("Minimax Called");
+						board[a][b][c] = AI;
+						point = Minimax(4,false,-Infinity,Infinity);
+						console.log(point);
+						console.log("All :" + cop);
+						console.log("AI :" + ai);
+						console.log("Human :" + hu);
+						console.log("Tie :" + ti);
+						console.log("Heuristic :" + heuristic);
+						cop = 0;
+						ai = 0;
+						hu = 0;
+						ti = 0;
+						heuristic = 0;
+						board[a][b][c] = "";
+						if (point > bestPoint){
+							choice.x = a;
+							choice.y = b;
+							choice.z = c;
+						}
+						bestPoint = Math.max(bestPoint , point);
+					}
+				}
+			}
+		}
+		return choice;
+	}
+	
+	////Minimax Algorithm
+	var cop = 0;
+	var ai = 0;
+	var hu = 0;
+	var ti = 0;
+	var heuristic = 0;
+	function Minimax(depth,isMaximizing,alpha,beta){
+		////returning point
+		//console.log(JSON.stringify(board));
+		let result = CheckWinner();
+		if (result != "inProgress"){
+			cop++;
+			//console.log(result);
+			if (result == AI){
+				//console.log("AI");
+				ai++;
+				return 100*(depth + 1);
+			}
+			if (result == human){
+				//console.log("human");
+				hu++;
+				return -100*(depth + 1);
+			}
+			if (result == "tie"){
+				//console.log("Tie");
+				ti++;
+				return 0;
+			}
+		}
+		if (depth == 0){
+			heuristic++;
+			return GuessPoint();
+		}
+		////Maximizing & Minimizing
+		if (isMaximizing){
+			let bestPoint = -Infinity;
+			for (let a = 0;a < 3;a++){
+				for (let b = 0;b < 3;b++){
+					for (let c = 0;c < 3;c++){
+						if (board[a][b][c] == ""){
+							board[a][b][c] = AI;
+							let point = Minimax(depth - 1,false,alpha,beta);
+							board[a][b][c] = "";
+							bestPoint = Math.max(bestPoint , point);
+							alpha = Math.max(alpha, point);
+							if (alpha >= beta){
+								return bestPoint;
+							}
+						}
+					}
+				}
+			}
+			return bestPoint;
+		} else {
+			let bestPoint = Infinity;
+			for (let a = 0;a < 3;a++){
+				for (let b = 0;b < 3;b++){
+					for (let c = 0;c < 3;c++){
+						if (board[a][b][c] == ""){
+							board[a][b][c] = human;
+							let point = Minimax(depth - 1,true,alpha,beta);
+							board[a][b][c] = "";
+							bestPoint = Math.min(bestPoint , point);
+							beta = Math.min(beta, point);
+							if (alpha >= beta){
+								return bestPoint;
+							}
+						}
+					}
+				}
+			}
+			return bestPoint;
+		}
+	}
+	
+	if (turn == AI && mode != "2v2"){
+		AIChoice = CallMinimax();
+		board[AIChoice.x][AIChoice.y][AIChoice.z] = AI;
+		if (turn == "x"){
+			turn = "o";
+			AddX(AIChoice.x.toString() + AIChoice.y.toString() + AIChoice.z.toString());
+		} else {
+			turn = "x";
+			AddO(AIChoice.x.toString() + AIChoice.y.toString() + AIChoice.z.toString());
+		}
+	}
+</script>
+</html>
